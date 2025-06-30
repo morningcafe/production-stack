@@ -164,10 +164,10 @@ func (r *VLLMRuntimeReconciler) deploymentForVLLMRuntime(vllmRuntime *production
 			},
 		},
 		InitialDelaySeconds: 30,
-		PeriodSeconds:       20,
+		PeriodSeconds:       5,
 		TimeoutSeconds:      5,
 		SuccessThreshold:    1,
-		FailureThreshold:    10,
+		FailureThreshold:    60,
 	}
 
 	livenessProbe := &corev1.Probe{
@@ -412,9 +412,10 @@ func (r *VLLMRuntimeReconciler) deploymentForVLLMRuntime(vllmRuntime *production
 							Name:            "vllm",
 							Image:           image,
 							ImagePullPolicy: imagePullPolicy,
-							Command:         []string{"/opt/venv/bin/vllm", "serve"},
-							Args:            args,
-							Env:             env,
+							Command:         []string{"vllm", "serve"},
+							// Command:         []string{"/opt/venv/bin/vllm", "serve"},
+							Args: args,
+							Env:  env,
 							Ports: []corev1.ContainerPort{
 								{
 									Name:          "http",
